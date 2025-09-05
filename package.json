@@ -1,0 +1,19 @@
+{
+  "name": "comp3330-expensetracker",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "start": "bun server/index.ts",
+    "dev": "bun --hot server/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.9.6"
+  }
+}
