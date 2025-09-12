@@ -1,3 +1,8 @@
+// Example helpers (optional) — place at top of server/routes/expenses.ts
+const ok = <T>(c: any, data: T, status = 200) => c.json({ data }, status);
+const err = (c: any, message: string, status = 400) =>
+  c.json({ error: { message } }, status);
+
 // server/routes/expenses.ts
 import { Hono } from "hono";
 import { z } from "zod";
@@ -23,15 +28,15 @@ export type Expense = z.infer<typeof expenseSchema>;
 // Router
 export const expensesRoute = new Hono()
   // GET /api/expenses → list
-  .get("/", (c) => c.json({ expenses }))
+  .get("/", (c) => ok(c, { expenses }))
 
   // GET /api/expenses/:id → single item
   // Enforce numeric id with a param regex (\\d+)
   .get("/:id{\\d+}", (c) => {
     const id = Number(c.req.param("id"));
     const item = expenses.find((e) => e.id === id);
-    if (!item) return c.json({ error: "Not found" }, 404);
-    return c.json({ expense: item });
+    if (!item) return err(c, "Not found", 404);
+    return ok(c, { expense: item });
   })
 
   // POST /api/expenses → create (validated)
@@ -40,14 +45,14 @@ export const expensesRoute = new Hono()
     const nextId = (expenses.at(-1)?.id ?? 0) + 1;
     const created: Expense = { id: nextId, ...data };
     expenses.push(created);
-    return c.json({ expense: created }, 201);
+    return ok(c, { expense: created }, 201);
   })
 
   // DELETE /api/expenses/:id → remove
   .delete("/:id{\\d+}", (c) => {
     const id = Number(c.req.param("id"));
     const idx = expenses.findIndex((e) => e.id === id);
-    if (idx === -1) return c.json({ error: "Not found" }, 404);
+    if (idx === -1) return err(c, "Not found", 404);
     const [removed] = expenses.splice(idx, 1);
-    return c.json({ deleted: removed });
+    return ok(c, { deleted: removed });
   });
