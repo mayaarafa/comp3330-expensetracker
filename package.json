@@ -4,17 +4,24 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "dotenv": "^17.2.2",
+    "drizzle-kit": "^0.31.4"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "scripts": {
     "start": "bun server/index.ts",
-    "dev": "bun --hot server/index.ts"
+    "dev": "bun --hot server/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.2",
+    "@neondatabase/serverless": "^1.0.1",
+    "drizzle-orm": "^0.44.5",
     "hono": "^4.9.6",
     "zod": "^4.1.8"
   }
