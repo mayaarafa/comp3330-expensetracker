@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./card";
+} from "./ui/card";
 
 export function AppCard() {
   return (
