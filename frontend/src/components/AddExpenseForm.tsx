@@ -6,31 +6,20 @@ export function AddExpenseForm() {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState<number | "">("");
 
-  const createExpense = useMutation({
+  const mutation = useMutation({
     mutationFn: async (payload: { title: string; amount: number }) => {
       const res = await fetch("http://localhost:3000/api/expenses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error("Failed to add expense");
+      if (!res.ok) throw new Error("Failed to add");
       return res.json();
     },
-    onMutate: async (newItem) => {
-      await qc.cancelQueries({ queryKey: ["expenses"] });
-      const prev = qc.getQueryData<{ expenses: any[] }>(["expenses"]);
-      if (prev) {
-        qc.setQueryData(["expenses"], {
-          expenses: [...prev.expenses, { id: Date.now(), ...newItem }],
-        });
-      }
-      return { prev };
-    },
-    onError: (_err, _newItem, ctx) => {
-      if (ctx?.prev) qc.setQueryData(["expenses"], ctx.prev);
-    },
-    onSettled: () => {
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["expenses"] });
+      setTitle("");
+      setAmount("");
     },
   });
 
@@ -39,33 +28,31 @@ export function AddExpenseForm() {
       onSubmit={(e) => {
         e.preventDefault();
         if (title && typeof amount === "number") {
-          createExpense.mutate({ title, amount });
+          mutation.mutate({ title, amount });
         }
       }}
-      className="mt-6 flex gap-2"
+      className="flex gap-2 mt-4"
     >
       <input
-        className="w-1/2 rounded border p-2"
-        placeholder="Title"
+        className="border p-2"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        required
+        placeholder="Title"
       />
       <input
-        className="w-40 rounded border p-2"
+        className="border p-2"
         type="number"
-        placeholder="Amount"
         value={amount}
         onChange={(e) =>
           setAmount(e.target.value === "" ? "" : Number(e.target.value))
         }
-        required
+        placeholder="Amount"
       />
       <button
-        className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
-        disabled={createExpense.isPending}
+        className="bg-black text-white px-3 py-1 rounded"
+        disabled={mutation.isPending}
       >
-        {createExpense.isPending ? "Adding…" : "Add"}
+        {mutation.isPending ? "Adding…" : "Add"}
       </button>
     </form>
   );
