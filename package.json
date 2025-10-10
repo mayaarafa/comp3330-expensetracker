@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.2",
+    "@kinde-oss/kinde-typescript-sdk": "^2.13.0",
     "@neondatabase/serverless": "^1.0.1",
     "drizzle-orm": "^0.44.5",
     "hono": "^4.9.6",

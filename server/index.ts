@@ -1,5 +1,6 @@
 // server/index.ts
 import { app } from "./app";
+import "dotenv/config";
 
 // Prefer PORT from env; default 3000
 const port = Number(process.env.PORT || 3000);
