@@ -5,6 +5,7 @@ import { expensesRoute } from "./routes/expenses";
 import { cors } from "hono/cors";
 import { authRoute } from "./auth/kinde";
 import { secureRoute } from "./routes/secure";
+import { uploadRoute } from "./routes/upload";
 
 export const app = new Hono();
 
@@ -37,3 +38,4 @@ app.get("/health", (c) => c.json({ status: "healthy" }));
 app.route("/api/auth", authRoute);
 app.route("/api/secure", secureRoute);
 app.route("/api/expenses", expensesRoute); // existing
+app.route("/api/upload", uploadRoute);
